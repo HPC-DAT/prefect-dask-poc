@@ -10,5 +10,9 @@ Starting from this repository users can create and manage their code. GitHub act
 
 ### Interactive use
 
+```{bash}
+apptainer pull dask_prefect.sif oras://ghcr.io/hpc-dat/prefect-dask-poc:latest
+apptainer run dask_prefect.sif python /src/flow.py
+```
 
 ### Slurm batch job

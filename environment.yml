@@ -4,6 +4,7 @@ channels:
 dependencies:
  - python=3.12
  - dask
+ - dask-geopandas
  - fsspec
  - geopandas
  - h5netcdf
