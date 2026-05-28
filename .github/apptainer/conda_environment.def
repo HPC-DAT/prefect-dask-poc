@@ -5,7 +5,7 @@ Stage: builder
 %files
     .github/apptainer/environment_default.yml
     environment.yml
-    /src /src
+    src /src
 
 %post
     . /opt/conda/etc/profile.d/conda.sh
