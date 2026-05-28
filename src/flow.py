@@ -32,25 +32,26 @@ from prefect import flow, get_run_logger, task, unmapped
 from prefect_dask import DaskTaskRunner, get_dask_client
 
 # ---------------------------------------------------------------------------
-# Config — fill in the <FILL IN ...> placeholders for your SLURM site.
+# Config — Using Spider configuration.
 # ---------------------------------------------------------------------------
-
 SLURM_KWARGS = dict(
-    queue="<FILL IN: SLURM partition, e.g. 'normal'>",
-    account="<FILL IN: SLURM account, or delete this line>",
-    cores=4,
+    queue="normal",
+    cores=2,
     processes=1,          # one Dask worker process per SLURM job
     memory="16GB",
-    walltime="01:00:00",
-    interface="ib0",      # cluster fabric; delete if not applicable
-    job_script_prologue=[
-        # Whatever it takes to activate the env on a worker node, e.g.:
-        # "module load 2023",
-        # "source /home/<you>/envs/prefect-dask-poc/bin/activate",
-        "<FILL IN: env activation lines>",
-    ],
+    walltime="02:00:00",
+    death_timeout=60,
+    job_extra_directives="['--output', '.jupyterdask/%x-%j.out']",
+    # local_directory="\$TMPDIR",
+    # python=<python path in container>
+    # job_script_prologue=[
+    #     # Whatever it takes to activate the env on a worker node, e.g.:
+    #     # "module load 2023",
+    #     # "source /home/<you>/envs/prefect-dask-poc/bin/activate",
+    #     "<FILL IN: env activation lines>",
+    # ],
     # Graceful shutdown before walltime expires:
-    worker_extra_args=["--lifetime", "55m", "--lifetime-stagger", "4m"],
+    # worker_extra_args=["--lifetime", "55m", "--lifetime-stagger", "4m"],
 )
 ADAPT_KWARGS = dict(minimum=2, maximum=8)
 

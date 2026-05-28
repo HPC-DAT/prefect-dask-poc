@@ -5,9 +5,9 @@
 #SBATCH --time=06:00:00
 #SBATCH --partition=normal
 #SBATCH --output=.jupyterdask/%x-%j.out
-##SBATCH --reservation=[reservation_name] 
+##SBATCH --reservation=[reservation_name]
 # The line above is commented out. To run with a reservation restore by removing the leading hash character and substituting
-# the correct reservation name 
+# the correct reservation name
 
 
 # modify the image bath below to reflect your repository. PAY ATTENTION to lower case spelling!
