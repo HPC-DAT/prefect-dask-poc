@@ -13,6 +13,7 @@ Starting from this repository users can create and manage their code. GitHub act
 ```{bash}
 srun -n 1 -c 4 -t 1:00:00 --pty /bin/bash
 apptainer pull dask_prefect.sif oras://ghcr.io/hpc-dat/prefect-dask-poc:latest
+export APPTAINER_IMAGE=$(realpath dask_prefect.sif)
 # Bind all paths from host system within the container
 _DIRS=`/usr/bin/ls -1 / | /usr/bin/awk '!/dev/' | /usr/bin/sed 's/^/\//g' `
 export APPTAINER_BIND=`echo ${_DIRS} | /usr/bin/sed 's/ /,/g' `

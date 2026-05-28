@@ -17,6 +17,7 @@ Pipeline:
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import List, Tuple
 from urllib.request import urlretrieve
@@ -42,14 +43,14 @@ logging.getLogger("dask_jobqueue").setLevel(logging.DEBUG)
 # ---------------------------------------------------------------------------
 # Config — Using Spider configuration.
 # ---------------------------------------------------------------------------
-APPTAINER_IMAGE="oras://ghcr.io/hpc-dat/prefect-dask-poc:latest"
+APPTAINER_IMAGE = os.environ.get("APPTAINER_IMAGE", "oras://ghcr.io/hpc-dat/prefect-dask-poc:latest")
 SLURM_KWARGS = dict(
     queue="normal",
     cores=2,
     processes=1,          # one Dask worker process per SLURM job
     memory="16GB",
     walltime="02:00:00",
-    death_timeout=60,
+    death_timeout=600,    # 10 min — allows for container pull + Slurm queue time
     job_extra_directives=["--output=.prefect_dask/%x-%j.out"],
     python=f"apptainer run {APPTAINER_IMAGE} python",
     # local_directory="\$TMPDIR",
