@@ -12,7 +12,24 @@ Starting from this repository users can create and manage their code. GitHub act
 
 ```{bash}
 apptainer pull dask_prefect.sif oras://ghcr.io/hpc-dat/prefect-dask-poc:latest
+export APPTAINER_BIND="\
+$(which sbatch):/usr/local/bin/sbatch,\
+$(which squeue):/usr/local/bin/squeue,\
+$(which scancel):/usr/local/bin/scancel,\
+/usr/lib64/slurm,\
+/usr/lib64/libmunge.so.2,\
+/etc/slurm,\
+/etc/passwd,\
+/etc/group,\
+/var/run/munge,\
+/home/$USER"
+export DO_NOT_TRACK=1
 apptainer run dask_prefect.sif python /src/flow.py
 ```
 
 ### Slurm batch job
+
+
+## Disclaimer
+
+PoC developed with Claude Code.

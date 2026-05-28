@@ -42,10 +42,9 @@ SLURM_KWARGS = dict(
     memory="16GB",
     walltime="02:00:00",
     death_timeout=60,
-    job_extra_directives="['--output', '.prefect_dask/%x-%j.out']",
+    job_extra_directives=["--output=.prefect_dask/%x-%j.out"],
     python=f"apptainer run {APPTAINER_IMAGE} python",
     # local_directory="\$TMPDIR",
-    # python=<python path in container>
     # job_script_prologue=[
     #     # Whatever it takes to activate the env on a worker node, e.g.:
     #     # "module load 2023",
