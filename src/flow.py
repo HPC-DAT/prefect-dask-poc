@@ -165,9 +165,6 @@ def ahn_filtering(
     work_dir: str = "./work",
     out_path: str = "./work/ground_sample.parquet",
 ) -> str:
-    with get_dask_client() as client:
-        client.wait_for_workers(n_workers=1, timeout=600)
-
     laz_path_fut = download_tile.submit(tile_url, work_dir)
     chunks_plan_fut = plan_chunks.submit(laz_path_fut)
 

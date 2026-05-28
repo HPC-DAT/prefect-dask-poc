@@ -19,10 +19,14 @@ export APPTAINER_IMAGE=$(realpath dask_prefect.sif)
 _DIRS=`/usr/bin/ls -1 / | /usr/bin/awk '!/dev/' | /usr/bin/sed 's/^/\//g' `
 export APPTAINER_BIND=`echo ${_DIRS} | /usr/bin/sed 's/ /,/g' `
 
-# Turn off Prefect tracking
+# Prefect config
+# Select free port and host ip
 export PREFECT_API_PORT=`comm -23 <(seq 49152 65535 | sort) <(ss -Htan | awk '{print $4}' | cut -d':' -f2 | sort -u) | shuf | head -n 1`
 export PREFECT_API_URL="http://$(hostname -I | awk '{print $1}'):${PREFECT_API_PORT}/api"
+# Turn off Prefect tracking
 export DO_NOT_TRACK=1
+
+PREFECT_SERVER_API_HOST=$(hostname -I | awk '{print $1}') PREFECT_SERVER_API_PORT=$PREFECT_API_PORT apptainer run $APPTAINER_IMAGE prefect server start --no-ui &
 
 apptainer run dask_prefect.sif python /src/flow.py
 ```
