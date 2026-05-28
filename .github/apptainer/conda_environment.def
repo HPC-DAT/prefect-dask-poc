@@ -32,6 +32,9 @@ Stage: primary
 %files from builder
     /venv /venv
 
+% files
+    /src /src
+
 %environment
     export PATH="/venv/bin:${PATH}"
 
