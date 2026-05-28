@@ -11,18 +11,12 @@ Starting from this repository users can create and manage their code. GitHub act
 ### Interactive use
 
 ```{bash}
+srun -n 1 -c 4 -t 1:00:00 --pty /bin/bash
 apptainer pull dask_prefect.sif oras://ghcr.io/hpc-dat/prefect-dask-poc:latest
-export APPTAINER_BIND="\
-$(which sbatch):/usr/local/bin/sbatch,\
-$(which squeue):/usr/local/bin/squeue,\
-$(which scancel):/usr/local/bin/scancel,\
-/usr/lib64/slurm,\
-/usr/lib64/libmunge.so.2,\
-/etc/slurm,\
-/etc/passwd,\
-/etc/group,\
-/var/run/munge,\
-/home/$USER"
+# Bind all paths from host system within the container
+_DIRS=`/usr/bin/ls -1 / | /usr/bin/awk '!/dev/' | /usr/bin/sed 's/^/\//g' `
+export APPTAINER_BIND=`echo ${_DIRS} | /usr/bin/sed 's/ /,/g' `
+# Turn off Prefect tracking
 export DO_NOT_TRACK=1
 apptainer run dask_prefect.sif python /src/flow.py
 ```

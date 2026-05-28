@@ -32,6 +32,14 @@ from prefect import flow, get_run_logger, task, unmapped
 from prefect_dask import DaskTaskRunner, get_dask_client
 
 # ---------------------------------------------------------------------------
+# Uncomment to enable DEBUG logging
+# ---------------------------------------------------------------------------
+import logging
+logging.getLogger("distributed").setLevel(logging.DEBUG)
+logging.getLogger("dask_jobqueue").setLevel(logging.DEBUG)
+
+
+# ---------------------------------------------------------------------------
 # Config — Using Spider configuration.
 # ---------------------------------------------------------------------------
 APPTAINER_IMAGE="oras://ghcr.io/hpc-dat/prefect-dask-poc:latest"
