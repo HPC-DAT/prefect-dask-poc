@@ -34,6 +34,7 @@ from prefect_dask import DaskTaskRunner, get_dask_client
 # ---------------------------------------------------------------------------
 # Config — Using Spider configuration.
 # ---------------------------------------------------------------------------
+APPTAINER_IMAGE="oras://ghcr.io/hpc-dat/prefect-dask-poc:latest"
 SLURM_KWARGS = dict(
     queue="normal",
     cores=2,
@@ -42,6 +43,7 @@ SLURM_KWARGS = dict(
     walltime="02:00:00",
     death_timeout=60,
     job_extra_directives="['--output', '.jupyterdask/%x-%j.out']",
+    python=f"apptainer run {APPTAINER_IMAGE} python",
     # local_directory="\$TMPDIR",
     # python=<python path in container>
     # job_script_prologue=[
