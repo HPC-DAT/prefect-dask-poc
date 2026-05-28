@@ -28,9 +28,10 @@ import geopandas as gpd
 import laspy
 import numpy as np
 import pandas as pd
+from dask.distributed import worker_client
 from dask_jobqueue import SLURMCluster
 from prefect import flow, get_run_logger, task, unmapped
-from prefect_dask import DaskTaskRunner, get_dask_client
+from prefect_dask import DaskTaskRunner
 
 # ---------------------------------------------------------------------------
 # Uncomment to enable DEBUG logging
@@ -128,7 +129,7 @@ def build_and_filter(
     "collection-level parallelism" half of the demo.
     """
     log = get_run_logger()
-    with get_dask_client():
+    with worker_client():
         ddf = dd.from_pandas(
             pd.concat(chunks, ignore_index=True),
             npartitions=max(1, len(chunks)),

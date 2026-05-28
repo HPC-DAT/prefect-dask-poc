@@ -26,7 +26,9 @@ export PREFECT_API_URL="http://$(hostname -I | awk '{print $1}'):${PREFECT_API_P
 # Turn off Prefect tracking
 export DO_NOT_TRACK=1
 
-PREFECT_SERVER_API_HOST=$(hostname -I | awk '{print $1}') PREFECT_SERVER_API_PORT=$PREFECT_API_PORT apptainer run $APPTAINER_IMAGE prefect server start --no-ui &
+export PREFECT_SERVER_API_HOST=$(hostname -I | awk '{print $1}')
+export PREFECT_SERVER_API_PORT=$PREFECT_API_PORT
+apptainer run $APPTAINER_IMAGE prefect server start --no-ui &
 
 apptainer run dask_prefect.sif python /src/flow.py
 ```
