@@ -9,6 +9,7 @@ dependencies:
  - geopandas
  - h5netcdf
  - joblib
+ - laspy[lazrs]
  - matplotlib
  - numpy
  - odc-stac
