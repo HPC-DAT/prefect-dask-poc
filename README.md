@@ -14,11 +14,16 @@ Starting from this repository users can create and manage their code. GitHub act
 srun -n 1 -c 4 -t 1:00:00 --pty /bin/bash
 apptainer pull dask_prefect.sif oras://ghcr.io/hpc-dat/prefect-dask-poc:latest
 export APPTAINER_IMAGE=$(realpath dask_prefect.sif)
+
 # Bind all paths from host system within the container
 _DIRS=`/usr/bin/ls -1 / | /usr/bin/awk '!/dev/' | /usr/bin/sed 's/^/\//g' `
 export APPTAINER_BIND=`echo ${_DIRS} | /usr/bin/sed 's/ /,/g' `
+
 # Turn off Prefect tracking
+export PREFECT_API_PORT=`comm -23 <(seq 49152 65535 | sort) <(ss -Htan | awk '{print $4}' | cut -d':' -f2 | sort -u) | shuf | head -n 1`
+export PREFECT_API_URL="http://$(hostname -I | awk '{print $1}'):${PREFECT_API_PORT}/api"
 export DO_NOT_TRACK=1
+
 apptainer run dask_prefect.sif python /src/flow.py
 ```
 

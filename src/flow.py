@@ -54,19 +54,16 @@ SLURM_KWARGS = dict(
     job_extra_directives=["--output=.prefect_dask/%x-%j.out"],
     python=f"apptainer run {APPTAINER_IMAGE} python",
     # local_directory="\$TMPDIR",
-    # job_script_prologue=[
-    #     # Whatever it takes to activate the env on a worker node, e.g.:
-    #     # "module load 2023",
-    #     # "source /home/<you>/envs/prefect-dask-poc/bin/activate",
-    #     "<FILL IN: env activation lines>",
-    # ],
+    job_script_prologue=[
+        "unset APPTAINER_BIND",  # workers don't need the scheduler's Slurm binds
+    ],
     # Graceful shutdown before walltime expires:
     # worker_extra_args=["--lifetime", "55m", "--lifetime-stagger", "4m"],
 )
 ADAPT_KWARGS = dict(minimum=2, maximum=8)
 
 # Public AHN3/AHN4 LAZ tile. See README for sources.
-DEFAULT_TILE_URL = "<FILL IN: https://.../some_tile.LAZ>"
+DEFAULT_TILE_URL = "https://basisdata.nl/hwh-ahn/AHN3/LAZ/C_36FN2.LAZ"
 
 CHUNK_POINTS = 5_000_000        # points per read_chunk task
 CRS_AHN = "EPSG:28992"          # Amersfoort / RD New
@@ -168,6 +165,9 @@ def ahn_filtering(
     work_dir: str = "./work",
     out_path: str = "./work/ground_sample.parquet",
 ) -> str:
+    with get_dask_client() as client:
+        client.wait_for_workers(n_workers=1, timeout=600)
+
     laz_path_fut = download_tile.submit(tile_url, work_dir)
     chunks_plan_fut = plan_chunks.submit(laz_path_fut)
 
