@@ -13,6 +13,8 @@ Starting from this repository users can create and manage their code. GitHub act
 ```{bash}
 srun -n 1 -c 4 -t 1:00:00 --pty /bin/bash
 apptainer pull dask_prefect.sif oras://ghcr.io/hpc-dat/prefect-dask-poc:latest
+
+# Use reference to apptainer image, so image is not pulled on each node
 export APPTAINER_IMAGE=$(realpath dask_prefect.sif)
 
 # Bind all paths from host system within the container
@@ -25,12 +27,16 @@ export PREFECT_API_PORT=`comm -23 <(seq 49152 65535 | sort) <(ss -Htan | awk '{p
 export PREFECT_API_URL="http://$(hostname -I | awk '{print $1}'):${PREFECT_API_PORT}/api"
 # Turn off Prefect tracking
 export DO_NOT_TRACK=1
+# Prefect log level
+export PREFECT_LOGGING_LEVEL=DEBUG
 
+# Start local Prefect server
 export PREFECT_SERVER_API_HOST=$(hostname -I | awk '{print $1}')
 export PREFECT_SERVER_API_PORT=$PREFECT_API_PORT
 apptainer run $APPTAINER_IMAGE prefect server start --no-ui &
 
-apptainer run dask_prefect.sif python /src/flow.py
+# Run prefect pipeline in script
+apptainer run $APPTAINER_IMAGE python /src/flow.py
 ```
 
 ### Slurm batch job
